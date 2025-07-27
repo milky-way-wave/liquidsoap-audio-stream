@@ -31,6 +31,7 @@ tracks = metadata.map(update=false, fun(m) -> begin
   title = m["title"] ?? "Unknown Title"
   artist = m["artist"] ?? "Unknown Artist"
   filename = m["filename"] ?? "Unknown File"
+  log("Playing track: #{artist} - #{title} (#{filename})")
   m
 end, tracks)
 
@@ -48,6 +49,7 @@ jingles = metadata.map(update=false, fun(m) -> begin
   title = m["title"] ?? "Jingle"
   artist = m["artist"] ?? station_name
   filename = m["filename"] ?? "Unknown Jingle"
+  log("Playing jingle: #{artist} - #{title} (#{filename})")
   m
 end, jingles)
 
