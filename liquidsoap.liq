@@ -17,6 +17,11 @@ station_description = environment.get("STATION_DESCRIPTION")
 station_genre = environment.get("STATION_GENRE")
 station_url = environment.get("STATION_URL")
 
+# GLOBAL VARS
+current_title = ref("Unknown Title")
+current_artist = ref("Unknown Artist")
+current_image = ref("")
+
 tracks = playlist(
   mode="randomize",
   reload_mode="watch",
@@ -31,6 +36,15 @@ tracks = metadata.map(update=false, fun(m) -> begin
   title = m["title"] ?? "Unknown Title"
   artist = m["artist"] ?? "Unknown Artist"
   filename = m["filename"] ?? "Unknown File"
+
+  cover_url := ""
+
+  current_title := title
+  current_artist := artist
+  current_image := cover_url
+
+  list.append(m, [("StreamUrl", cover_url)])
+
   log("Playing track: #{artist} - #{title} (#{filename})")
   m
 end, tracks)
@@ -71,6 +85,16 @@ safe_source = fallback(
     main_source,
     sine(440.0)
   ]
+)
+
+safe_source = metadata.insert(
+  every=3.0,
+  fun() -> [
+    ("title", !current_title),
+    ("artist", !current_artist),
+    ("StreamUrl", !current_image)
+  ],
+  safe_source
 )
 
 output.icecast(
