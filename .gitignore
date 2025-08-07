@@ -1,2 +1,11 @@
+# idea's
+.idea
+.vscode
+
+# env
 .env*
 !.env.example
+
+# misc
+.DS_Store
+*.pem

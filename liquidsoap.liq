@@ -4,7 +4,7 @@ settings.server.telnet := true
 settings.server.telnet.bind_addr := "0.0.0.0"
 settings.server.telnet.port := 1234
 
-settings.log.level := 2
+settings.log.level := 4
 settings.log.stdout := true
 
 icecast_host = environment.get("ICECAST_HOST")
@@ -37,15 +37,12 @@ tracks = metadata.map(update=false, fun(m) -> begin
   artist = m["artist"] ?? "Unknown Artist"
   filename = m["filename"] ?? "Unknown File"
 
-  cover_url := ""
-
   current_title := title
   current_artist := artist
-  current_image := cover_url
-
-  list.append(m, [("StreamUrl", cover_url)])
+  current_image := ""
 
   log("Playing track: #{artist} - #{title} (#{filename})")
+  log("Cover: #{current_image}")
   m
 end, tracks)
 
@@ -85,16 +82,6 @@ safe_source = fallback(
     main_source,
     sine(440.0)
   ]
-)
-
-safe_source = metadata.insert(
-  every=3.0,
-  fun() -> [
-    ("title", !current_title),
-    ("artist", !current_artist),
-    ("StreamUrl", !current_image)
-  ],
-  safe_source
 )
 
 output.icecast(
